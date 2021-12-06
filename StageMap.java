@@ -5,7 +5,7 @@ public class StageMap {
     Map<Character, Integer> map_data_value;
 
     public StageMap() {
-        // 지도 데이터별 변환값
+        // 지도 데이터별 변환값 
         map_data_value = new HashMap<>();
         map_data_value.put('#', 0);
         map_data_value.put('O', 1);

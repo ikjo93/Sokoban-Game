@@ -1,4 +1,4 @@
-public class MapData {
+public class MapData { 
 
     private String stage_name;
     private int[][] map_data;
