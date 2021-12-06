@@ -6,7 +6,7 @@ public class StageMap {
 
     public StageMap() {
         // 지도 데이터별 변환값
-        this.map_data_value = new HashMap<>();
+        map_data_value = new HashMap<>();
         map_data_value.put('#', 0);
         map_data_value.put('O', 1);
         map_data_value.put('o', 2);
@@ -126,8 +126,8 @@ public class StageMap {
     public char getMapData(int value) {
 
         // value와 일치하는 key 반환
-        for (Character key : this.map_data_value.keySet()) {
-            if (value == this.map_data_value.get(key)) {
+        for (Character key : map_data_value.keySet()) {
+            if (value == map_data_value.get(key)) {
                 return key;
             }
         }
