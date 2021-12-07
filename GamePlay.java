@@ -23,19 +23,15 @@ public class GamePlay {
 
     public boolean moveMap(MapData mapData) {
         Scanner sc = new Scanner(System.in);
-
         int[][] map_data = mapData.getMap_data();
-        int row = map_data.length, col = map_data[0].length;
+        int row = map_data.length, col = map_data[0].length, turn = 0;
         int[][] map_data_origin = new int[row][col];
         for (int i = 0; i < row; i++) for (int j = 0; j < col; j++) map_data_origin[i][j] = map_data[i][j];
 
         int x = mapData.getPlayer_pos()[0], y = mapData.getPlayer_pos()[1];
-        int[] player_pos = {x, y};
-        int[] player_pos_origin = {x, y};
+        int[] player_pos = {x, y}, player_pos_origin = {x, y};
 
-        int turn = 0;
         char[] commands;
-        boolean clear_flag = false;
         String stage_name = mapData.getStage_name();
 
         while(true) {
@@ -60,11 +56,12 @@ public class GamePlay {
                 else continue;
                 System.out.printf("현재 턴수 : %d%n%n", turn);
 
+                // 변경된 지도 데이터, 플레이어의 위치 저장
                 map_data = mapData.getMap_data();
                 player_pos = mapData.getPlayer_pos();
                 showMap(map_data);
 
-                if(clear_flag = checkClear(map_data, map_data_origin) == true) {
+                if(checkClear(map_data, map_data_origin) == true) {
                     System.out.printf("%s 클리어!! 총 %d 턴수가 소요되었습니다!!%n%n", stage_name, turn);
                     return false;
                 }
