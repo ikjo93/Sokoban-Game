@@ -23,6 +23,7 @@ public class GamePlay {
 
     public boolean moveMap(MapData mapData) {
         Scanner sc = new Scanner(System.in);
+
         int[][] map_data = mapData.getMap_data();
         int row = map_data.length, col = map_data[0].length, turn = 0;
         int[][] map_data_origin = new int[row][col];
@@ -32,34 +33,48 @@ public class GamePlay {
         int[] player_pos = {x, y}, player_pos_origin = {x, y};
 
         char[] commands;
+        char command;
         String stage_name = mapData.getStage_name();
 
+        // 지도 데이터와 플레이어의 위치 로그 저장 리스트 자료구조
+        List<int[][]> map_log = new ArrayList<>();
+        List<int[]> player_log = new ArrayList<>();
+        map_log.add(map_data_origin);
+        player_log.add(player_pos_origin);
+        int[][] map_data_log;
+        int[] player_pos_log;
+
         while(true) {
-            System.out.print("w(위쪽), a(왼쪽), s(아래쪽), d(오른쪽), q(게임 종료), r(스테이지 초기화) 중 하나 이상 입력해주세요 : ");
+
+            System.out.print("w(위쪽), a(왼쪽), s(아래쪽), d(오른쪽), q(게임 종료), r(스테이지 초기화), u(한 턴 되돌리기), U(턴 되돌리기 취소) 중 하나 이상 입력해주세요 : ");
             commands = sc.nextLine().toCharArray();
+
             for (int i = 0; i < commands.length; i++) {
-                if(commands[i] == 'q') {
+                command = commands[i];
+                if(command == 'q') {
                     System.out.println("게임을 종료합니다.");
                     return true;
-                } else if(commands[i] == 'r') {
-                    for (int j = 0; j < row; j++) for (int k = 0; k < col; k++) map_data[j][k] = map_data_origin[j][k];
-                    player_pos[0] = player_pos_origin[0];
-                    player_pos[1] = player_pos_origin[1];
-                    System.out.println("스테이지를 초기화 합니다.");
+                } else if(command == 'r') {
+                    initStage(map_data, map_data_origin, map_log, player_pos, player_pos_origin, player_log);
                     turn = 0;
-                    showMap(map_data);
+                    continue;
+                } else if(command == 'u' || command == 'U') {
+                    turn = goBackOrForward(command, turn, map_data, map_log, player_pos, player_log);
                     continue;
                 }
 
-                mapData = checkCommand(map_data, map_data_origin, player_pos, commands[i]);
+                mapData = checkCommand(map_data, map_data_origin, player_pos, command);
                 if(!(mapData == null)) turn++;
                 else continue;
                 System.out.printf("현재 턴수 : %d%n%n", turn);
-
-                // 변경된 지도 데이터, 플레이어의 위치 저장
-                map_data = mapData.getMap_data();
-                player_pos = mapData.getPlayer_pos();
                 showMap(map_data);
+
+                // 변경된 지도 데이터와 플레이어의 위치 로깅 작업
+                map_data_log = new int[row][col];
+                for (int j = 0; j < row; j++) for (int k = 0; k < col; k++) map_data_log[j][k] = map_data[j][k];
+                player_pos_log = new int[]{player_pos[0], player_pos[1]};
+                map_log.add(map_data_log);
+                player_log.add(player_pos_log);
 
                 if(checkClear(map_data, map_data_origin) == true) {
                     System.out.printf("%s 클리어!! 총 %d 턴수가 소요되었습니다!!%n%n", stage_name, turn);
@@ -69,11 +84,57 @@ public class GamePlay {
         }
     }
 
+    public void initStage(int[][] map_data, int[][] map_data_origin, List<int[][]> map_log, int[] player_pos, int[] player_pos_origin, List<int[]> player_log){
+        int row = map_data.length, col = map_data[0].length;
+
+        for (int j = 0; j < row; j++) for (int k = 0; k < col; k++) map_data[j][k] = map_data_origin[j][k];
+        player_pos[0] = player_pos_origin[0];
+        player_pos[1] = player_pos_origin[1];
+        System.out.println("스테이지를 초기화 합니다.");
+
+        map_log.clear();
+        map_log.add(map_data_origin);
+        player_log.clear();
+        player_log.add(player_pos_origin);
+
+        System.out.printf("현재 턴수 : 0%n%n");
+
+        showMap(map_data);
+    }
+
+    public int goBackOrForward(char command, int turn, int[][] map_data, List<int[][]> map_log, int[] player_pos, List<int[]> player_log){
+        int row = map_data.length, col = map_data[0].length;
+
+        if(command == 'u'){
+            if(turn < 1) {
+                System.out.println("(경고) 턴을 되돌릴 수 없습니다.");
+                return turn;
+            }
+            turn--;
+            System.out.printf("한 턴을 되돌립니다. 현재 턴 수 : %d%n", turn);
+        } else {
+            if(turn > map_log.size() - 2) {
+                System.out.println("(경고) 턴 되돌리기를 취소할 수 없습니다.");
+                return turn;
+            }
+            turn++;
+            System.out.printf("한 턴 되돌리기를 취소합니다. 현재 턴 수 : %d%n", turn);
+        }
+
+        for (int j = 0; j < row; j++) for (int k = 0; k < col; k++) map_data[j][k] = map_log.get(turn)[j][k];
+        player_pos[0] = player_log.get(turn)[0];
+        player_pos[1] = player_log.get(turn)[1];
+
+        showMap(map_data);
+
+        return turn;
+    }
+
     public MapData checkCommand(int[][] data, int[][] origin_data, int[] pos, char command){
 
         MapData mapData = new MapData();
-        // 이동할 좌표(x, y)와 현재 플레이어의 위치(row, col)
-        int x = 0, y = 0, row = pos[0], col = pos[1];
+
+        int x = 0, y = 0, row = pos[0], col = pos[1]; // 이동할 좌표(x, y)와 현재 플레이어의 위치(row, col)
         if (command == 'w') x--;
         else if (command == 'a') y--;
         else if (command == 's') x++;
@@ -119,7 +180,7 @@ public class GamePlay {
         for (int i = 0; i < data.length ; i++) {
             for (int j = 0; j < data[0].length; j++) {
                 if(data[i][j] == 1 || (data[i][j] == 3 && (map_data_origin[i][j] == 1 || map_data_origin[i][j] == 5))) return false;
-                if(data[i][j] == 4) break; // 구분선인 경우 for문 탈출
+                if(data[i][j] == 4) break; // 구분선인 경우 for문 break
             }
         }
         return true;
