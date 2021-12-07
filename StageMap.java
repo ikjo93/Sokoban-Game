@@ -13,6 +13,7 @@ public class StageMap {
         map_data_value.put('o', 2);
         map_data_value.put('P', 3);
         map_data_value.put('=', 4);
+        map_data_value.put('0', 5);
     }
 
     public List<MapData> createMap(int[][] map_size) throws IOException {
@@ -31,6 +32,9 @@ public class StageMap {
 
         // 지도 데이터 2차원 배열 선언
         int[][] map_data;
+
+        // 구멍의 위치를 저장할 2차원 배열 선언
+        int[][] map_hole_data;
 
         // 스테이지별 지도 데이터 읽어오기
         String stage_name;
@@ -123,6 +127,7 @@ public class StageMap {
             System.out.printf("공의 수: %d%n", ball_cnt);
             System.out.printf("플레이어 위치 (%d, %d)%n%n", player_posy, player_posx);
 
+            // 플레이어의 위치 저장
             int[] player_pos = {player_posy-1, player_posx-1};
             map.setPlayer_pos(player_pos);
 

@@ -28,9 +28,10 @@ public class Sokoban {
         // 3단계: 소코반 게임 완성하기
         MapData mapData;
         GamePlay gamePlay;
-        boolean flag = false;
+        boolean quit_flag = false;
+        int last_level = mapData_list.size();
 
-        for (int i = 1; i <= mapData_list.size(); i++) {
+        for (int i = 1; i <= last_level; i++) {
             System.out.println("Game Start!!");
             System.out.printf("Stage %d%n", i);
             System.out.println();
@@ -39,9 +40,11 @@ public class Sokoban {
             gamePlay = new GamePlay();
 
             gamePlay.showMap(mapData.getMap_data());
-            flag = gamePlay.moveMap(mapData.getMap_data(), mapData.getPlayer_pos());
-            if(flag) break;
+            quit_flag = gamePlay.moveMap(mapData);
+            if(quit_flag) break;
         }
+
+        if(!quit_flag) System.out.println("축하합니다!! 모든 스테이지를 클리어 했습니다!!");
 
     }
 
