@@ -212,7 +212,7 @@
 > > >  + GamePlay 클래스(지도 데이터 출력, 플레이어 이동)
 > >	>
 > > >  + 클래스 다이어그램
-> > > ![캡처1](https://user-images.githubusercontent.com/82401504/144905153-9fcf9682-e0f4-4f94-84c0-2ff227023100.PNG)
+> > > ![캡처1](https://user-images.githubusercontent.com/82401504/145070804-5b725c06-9f86-439a-8564-e974f29b23d6.PNG)
 > >
 > > + #### 풀이 과정
 > > >  + 1단계와 마찬가지로 기능별로 분리하고 최대한 기존의 코드를 재사용하고자 했습니다.
@@ -353,10 +353,11 @@
 > > >  + GamePlay 클래스(지도 데이터 출력, 플레이어의 이동 및 조건, 초기화 등 부가 기능)
 > >	>
 > > >  + 클래스 다이어그램
-> > > 
+> > > ![캡처2](https://user-images.githubusercontent.com/82401504/145070691-b19b10fd-880d-48f4-875e-294ba06c8ab5.PNG)
+
 > >
 > > + #### 풀이 과정
-> > >  + 실제 소코반 게임(https://www.cbc.ca/kids/games/play/sokoban) 상의 Stage 3~5(Stage 1~2는 그대로)의 지도를 그대로 구현하여 map.txt 파일에 작성하고 이를 StageMap 클래스 createMap 메서드에서 FileReader 객체를 생성하여 읽어오도록 했습니다.
+> > >  + 실제 소코반 게임(https://www.cbc.ca/kids/games/play/sokoban) 상의 Stage 3-5(Stage 1-2는 그대로)의 지도를 그대로 구현하여 map.txt 파일에 작성하고 이를 StageMap 클래스 createMap 메서드에서 FileReader 객체를 생성하여 읽어오도록 했습니다.
 > > >    + StageMap 객체로부터 얻은 지도 데이터 MapData 객체 리스트를 for문을 통해 Stage 1부터 실행되도록 구현했고 종료 조건(게임을 중간에 종료하거나 모든 스테이지를 완료한 경우)을 별도로 설정해주었습니다.
 > > >  + 스테이지별로 게임이 실행될 때 moveMap 메서드가 해당 MapData 객체를 받도록 하여 이를 통해 각 명령문(wasd)에 따라 플레이어의 이동 조건을 checkCommand 메서드에서 구현했고 해당 스테이지가 클리어 되는 조건을 checkClear 메서드에서 구현했습니다.
 > > >    + 이때, 플레이어가 공을 밀거나 플레이가 구멍 위를 지나가는 경우 구멍이 사라졌다가 생기는 것을 구현하기 위해 moveMap 메서드에서 최초 스테이지 지도 데이터를 별도로 저장하여(map_data_origin) 이를 비교함으로써 지도 데이터를 바꾸어 주었습니다.
@@ -547,5 +548,3 @@
 > > > 
 > > > 축하합니다!! 모든 스테이지를 클리어 했습니다!!
 > > > ```
-
-
