@@ -5,7 +5,7 @@ public class StageMap {
     Map<Character, Integer> map_data_value;
 
     public StageMap() {
-        // 지도 데이터별 변환값 
+        // 지도 데이터별 변환값
         map_data_value = new HashMap<>();
         map_data_value.put('#', 0);
         map_data_value.put('O', 1);
@@ -110,13 +110,16 @@ public class StageMap {
 
             // 스테이지 관련 정보(지도 크기, 구멍과 공의 수 등) 출력
             System.out.printf("가로크기: %d%n", data[0].length);
-            if(flag)
+            if(flag) // 구분 기호를 포함하는 경우
                 System.out.printf("세로크기: %d%n", data.length-1);
-            else
+            else // 구분 기호를 포함하지 않는 경우
                 System.out.printf("세로크기: %d%n", data.length);
             System.out.printf("구멍의 수: %d%n", hole_cnt);
             System.out.printf("공의 수: %d%n", ball_cnt);
             System.out.printf("플레이어 위치 (%d, %d)%n%n", player_posy, player_posx);
+
+            int[] player_pos = {player_posy-1, player_posx-1};
+            map.setPlayer_pos(player_pos);
 
             flag = false;
         }
