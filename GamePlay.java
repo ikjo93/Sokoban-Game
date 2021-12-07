@@ -2,7 +2,7 @@ import java.util.*;
 
 public class GamePlay {
 
-    public void showMap(int[][] data){
+    public void showMap(int[][] data) {
 
         char elem; // 지도 데이터 요소
 
@@ -21,18 +21,33 @@ public class GamePlay {
         System.out.println();
     }
 
-    public void moveMap(int[][] map_data, int[] player_pos){
+    public boolean moveMap(int[][] map_data, int[] player_pos){
         Scanner sc = new Scanner(System.in);
+        MapData mapData;
+        int turn = 0;
         char[] commands;
-        while(true){
-            System.out.print("w(위쪽), a(왼쪽), s(아래쪽), d(오른쪽), q(게임 종료) 중 하나 이상 입력해주세요 : ");
+        int row = map_data.length, col = map_data[0].length;
+
+        // 초기화를 위한 최초 지도 데이터 저장
+        int[][] map_data_memo = new int[row][col];
+        for (int i = 0; i < row; i++) for (int j = 0; j < col; j++) map_data_memo[i][j] = map_data[i][j];
+
+        while(true) {
+            System.out.print("w(위쪽), a(왼쪽), s(아래쪽), d(오른쪽), q(게임 종료), r(스테이지 초기화) 중 하나 이상 입력해주세요 : ");
             commands = sc.nextLine().toCharArray();
             for (int i = 0; i < commands.length; i++) {
                 if(commands[i] == 'q') {
                     System.out.println("게임을 종료합니다.");
-                    return;
+                    return true;
                 }
-                MapData mapData = checkCommand(map_data, player_pos, commands[i]);
+                else if(commands[i] == 'r') {
+                    for (int j = 0; j < row; j++) for (int k = 0; k < col; k++) map_data[j][k] = map_data_memo[j][k];
+                    System.out.println("스테이지를 초기화 합니다.");
+                    showMap(map_data);
+                    continue;
+                }
+
+                mapData = checkCommand(map_data, player_pos, commands[i]);
                 map_data = mapData.getMap_data();
                 player_pos = mapData.getPlayer_pos();
                 showMap(map_data);
@@ -48,7 +63,8 @@ public class GamePlay {
                             data[pos[0]][pos[1]] = 32;
                             pos[0]--;
                             System.out.printf("위로 이동합니다. 현재 위치 ↓ %n");
-                        } else System.out.printf("(경고) 해당 명령을 수행할 수 없습니다!! 현재 위치 ↓ %n");
+                        }
+                        else System.out.printf("(경고) 해당 명령을 수행할 수 없습니다!! 현재 위치 ↓ %n");
                         break;
 
             case 'a':   if(data[pos[0]][pos[1]-1] == 32) {
@@ -85,6 +101,5 @@ public class GamePlay {
 
         return mapData;
     }
-
 
 }

@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.*;
 
 public class StageMap {
@@ -14,8 +15,8 @@ public class StageMap {
         map_data_value.put('=', 4);
     }
 
-    public List<MapData> createMap(int[][] map_size) {
-        Scanner sc = new Scanner(System.in);
+    public List<MapData> createMap(int[][] map_size) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("C:\\map.txt"));
 
         // 스테이지별 지도 데이터(스테이지명, 지도 데이터)를 저장하기 위한 MapData 객체 선언
         MapData mapData;
@@ -32,15 +33,20 @@ public class StageMap {
         int[][] map_data;
 
         // 스테이지별 지도 데이터 읽어오기
-        for (int i = 0; i < map_size.length; i++) {
+        String stage_name;
+        int stage_level = 0;
+
+        while((stage_name = reader.readLine()) != null) {
+
             // 지도 데이터를 저장하기 위한 MapData 객체 생성
             mapData = new MapData();
 
             // 스테이지명을 읽어오고 MapData 객체에 저장
-            mapData.setStage_name(sc.nextLine());
+            mapData.setStage_name(stage_name);
 
             // 스테이지별 가로, 세로 크기에 따라 지도 데이터 2차원 배열 생성
-            map_data = new int[map_size[i][0]][map_size[i][1]];
+            map_data = new int[map_size[stage_level][0]][map_size[stage_level][1]];
+            stage_level++;
 
             // 스테이지 데이터 2차원 배열 ' ' 값으로 초기화
             for (int[] ch : map_data) Arrays.fill(ch, ' ');
@@ -48,13 +54,12 @@ public class StageMap {
             // 스테이지 데이터를 읽어오고 이때 앞서 생성한 Hashmap으로부터 스테이지 데이터별 변환값을 스테이지 데이터 2차원 배열에 각각 저장함
             for (int j = 0; j < map_data.length; j++) {
 
-                char[] data = sc.nextLine().toCharArray();
+                char[] data = reader.readLine().toCharArray();
 
                 for (int k = 0; k < data.length; k++) {
                     if (map_data_value.containsKey(data[k]))
                         map_data[j][k] = map_data_value.get(data[k]);
                 }
-
             }
 
             // 읽어온 스테이지 데이터를 MapData 객체에 저장
