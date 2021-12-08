@@ -47,7 +47,7 @@ public class GamePlay {
 
         while(true) {
 
-            System.out.printf("※ 부가 기능 : q(게임 종료), r(스테이지 초기화), u(한 턴 되돌리기), U(턴 되돌리기 취소)%n명령어 w(위쪽), a(왼쪽), s(아래쪽), d(오른쪽) 중 하나 이상 입력해주세요. : ");
+            System.out.printf("※ 부가 기능 : q(게임 종료), r(스테이지 초기화), u(한 턴 되돌리기), U(턴 되돌리기 취소), 1~5(세이브 슬롯 선택), S(세이브), L(불러오기)%n명령어 w(위쪽), a(왼쪽), s(아래쪽), d(오른쪽) 중 하나 이상 입력해주세요. : ");
             commands = sc.nextLine().toCharArray();
 
             for (int i = 0; i < commands.length; i++) {
