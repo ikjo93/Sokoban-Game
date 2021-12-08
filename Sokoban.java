@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Sokoban {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
 
         // 1단계 : 지도 데이터 출력하기
         // 스테이지별 지도의 가로, 세로 길이 크기 설정
@@ -25,7 +25,7 @@ public class Sokoban {
         gamePlay.showMap(mapData.getMap_data());
         gamePlay.moveMap(mapData.getMap_data(), mapData.getPlayer_pos());*/
 
-        // 3단계: 소코반 게임 완성하기
+        // 3단계: 소코반 게임 완성하기 + 4단계 추가기능 구현
         MapData mapData;
         GamePlay gamePlay;
         boolean quit_flag = false;
@@ -41,7 +41,10 @@ public class Sokoban {
 
             gamePlay.showMap(mapData.getMap_data());
             quit_flag = gamePlay.moveMap(mapData);
-            if(quit_flag) break;
+            if(quit_flag) {
+                System.out.println("게임을 종료합니다.");
+                break;
+            }
         }
 
         if(!quit_flag) System.out.println("축하합니다!! 모든 스테이지를 클리어 했습니다!!");

@@ -1,4 +1,6 @@
+import javax.crypto.spec.IvParameterSpec;
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class StageMap {
@@ -6,7 +8,7 @@ public class StageMap {
     Map<Character, Integer> map_data_value;
 
     public StageMap() {
-        // 지도 데이터별 변환값
+        // 지도 데이터별 변환값(공백 ' '는 9로 변환)
         map_data_value = new HashMap<>();
         map_data_value.put('#', 0);
         map_data_value.put('O', 1);
@@ -16,8 +18,19 @@ public class StageMap {
         map_data_value.put('0', 5);
     }
 
-    public List<MapData> createMap(int[][] map_size) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader("C:\\map.txt"));
+    public List<MapData> createMap(int[][] map_size) throws Exception {
+
+        AESCryptoUtil aesCryptoUtil = new AESCryptoUtil();
+
+        String key = "Sokoban is good!";
+        String specName = "AES/CBC/PKCS5Padding";
+        String ivParameterSpec = "Sokoban is good!";
+
+        File encryptedFile = new File("map_enc.txt");
+        File decryptedFile = new File("map_dec.txt");
+        aesCryptoUtil.decryptFile(specName, key, ivParameterSpec, encryptedFile, decryptedFile);
+
+        BufferedReader reader = new BufferedReader(new FileReader("map_dec.txt"));
 
         // 스테이지별 지도 데이터(스테이지명, 지도 데이터)를 저장하기 위한 MapData 객체 선언
         MapData mapData;
@@ -32,9 +45,6 @@ public class StageMap {
 
         // 지도 데이터 2차원 배열 선언
         int[][] map_data;
-
-        // 구멍의 위치를 저장할 2차원 배열 선언
-        int[][] map_hole_data;
 
         // 스테이지별 지도 데이터 읽어오기
         String stage_name;
@@ -52,8 +62,8 @@ public class StageMap {
             map_data = new int[map_size[stage_level][0]][map_size[stage_level][1]];
             stage_level++;
 
-            // 스테이지 데이터 2차원 배열 ' ' 값으로 초기화
-            for (int[] ch : map_data) Arrays.fill(ch, ' ');
+            // 스테이지 데이터 2차원 배열을 9(' '를 의미) 값으로 초기화
+            for (int[] ch : map_data) Arrays.fill(ch, 9);
 
             // 스테이지 데이터를 읽어오고 이때 앞서 생성한 Hashmap으로부터 스테이지 데이터별 변환값을 스테이지 데이터 2차원 배열에 각각 저장함
             for (int j = 0; j < map_data.length; j++) {
@@ -87,10 +97,8 @@ public class StageMap {
             int[][] data = map.getMap_data();
 
             char elem; // 지도 데이터 요소
-            int hole_cnt = 0; // 구멍의 개수
-            int ball_cnt = 0; // 공의 개수
-            int player_posx = 0; // 플레이어 위치 x축(가로-열의 길이)
-            int player_posy = 0; // 플레이어 위치 y축(세로-행의 길이)
+            // 구멍의 개수, 공의 개수, 플레이어 위치 x축(가로-열의 길이), 플레이어 위치 y축(세로-행의 길이)
+            int hole_cnt = 0, ball_cnt = 0, player_posx = 0, player_posy = 0;
             boolean flag = false; // 구분선을 포함하고 있는지 여부
 
             // 변환된 지도 데이터 값을 다시 원래대로 변환하여 콘솔창에 출력
