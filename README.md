@@ -628,4 +628,57 @@
 > > > ##### 지도 데이터 변환하기 프로그램
 > > > + 암호화 한 후 해독하는 과정에서 key, specName, iv 파라미터스펙 값 중 하나라도 다르면 해독 자체가 안되거나(key) 어느 정돈 해독해도 불완전하게(iv 파라미터스펙 값) 됩니다. 이를 위해 해당 값들을 난수 알고리즘을 통해 얻지 않고 일단 Converter 클래스에서 각 값을 문자열로 정의한 후 이를 인자로 두어 AESC 클래스에 전달해주었습니다. StageMap 클래스 역시 마찬가지로 작업을 진행해주었습니다. String으로 전달받은 AESC 클래스 각각의 메서드들은 이를 활용하여 SecretKeySpec 객체를 생성하거나 IvParameterSpec 객체를 생성함으로써 파일 암호화와 복호화를 진행해주었습니다.
 > > > ##### 되돌리기 기능 및 되돌리기 취소 기능 구현
-> > > + 처음 게임이 진행된 후 플레이어를 이동시킨 후 되돌리기하고 되돌리기 취소 기능을 하면 정상적으로 작동하지만 되돌리기 기능을 한 후에 플레이어를 몇 번 이동시킨 후 다시 되돌리기를 하다보면 직전에 있는 위치로 가는게 아니라 몇 단계 전으로 이동하게 되는 버그가 발생했습니다. 이 원인은 되돌리기 시 턴수가 1씩 감소하는데 이 턴수를 기준으로 List 자료구조로부터 데이터를 가져오기 때문입니다. 이때 플레이어가 추가로 움직이게 된다면 가장 최근에 생겼던 로깅 데이터를 가져와야 되는데 인덱스 상 한참 전인 턴수에 해당하는 데이터를 가져오기 때문입니다. 이를 개선하기 위해서는 되돌리기 후 플레이어가 이동 시 기존 로깅 데이터를 초기화하는 작업이 필요할 것으로 생각됩니다.
+> > > + 처음 게임이 진행된 후 플레이어를 이동시킨 후 되돌리기하고 되돌리기 취소 기능을 하면 정상적으로 작동하지만 되돌리기 기능을 한 후에 플레이어를 몇 번 이동시킨 후 다시 되돌리기를 하다보면 직전에 있는 위치로 가는게 아니라 몇 단계 전으로 이동하게 되는 버그가 발생했습니다. 이 원인은 되돌리기 시 턴수가 1씩 감소하는데 이 턴수를 기준으로 List 자료구조로부터 데이터를 가져오기 때문입니다. 이때 플레이어가 추가로 움직이게 된다면 가장 최근에 생겼던 로깅 데이터를 가져와야 되는데 인덱스 상 한참 전인 턴수에 해당하는 데이터를 가져오기 때문입니다. 이를 개선하기 위해서는 되돌리기 후 플레이어가 이동 시 기존 로깅 데이터를 초기화하는 작업이 필요했습니다. 개선된 코드는 다음과 같습니다.
+> > > ```Java
+> > > // 기존 코드
+> > > mapData = checkCommand(command, stage_name, map_data, map_data_origin, player_pos);
+> > > if(!(mapData == null)) turn++;
+> > > else continue;
+> > > System.out.printf("현재 턴수 : %d%n%n", turn);
+> > > showMap(map_data);
+> > > 
+> > > row = map_data.length;
+> > > col = map_data[0].length;
+> > > // 변경된 지도 데이터와 플레이어의 위치 로깅 작업
+> > > map_data_log = new int[row][col];
+> > > for (int j = 0; j < row; j++) for (int k = 0; k < col; k++) map_data_log[j][k] = map_data[j][k];
+> > > player_pos_log = new int[]{player_pos[0], player_pos[1]};
+> > > map_log.add(map_data_log);
+> > > player_log.add(player_pos_log);
+> > > 
+> > > if(checkClear(map_data, map_data_origin) == true) {
+> > >     System.out.printf("%s 클리어!! 총 %d 턴수가 소요되었습니다!!%n%n", stage_name, turn);
+> > >     return false;
+> > > }
+> > > // 개선된 코드
+> > > mapData = checkCommand(command, stage_name, map_data, map_data_origin, player_pos);
+> > > if(mapData == null) continue;
+> > > else {
+> > >     showMap(map_data);
+> > >     int loop = map_log.size() - 1;
+> > >     while (loop > turn) {
+> > >         map_log.remove(loop);
+> > >         player_log.remove(loop);
+> > >         loop--;
+> > >     }
+> > > }
+> > > 
+> > > // 변경된 지도 데이터와 플레이어의 위치 로깅 작업
+> > > row = map_data.length;
+> > > col = map_data[0].length;
+> > > map_data_log = new int[row][col];
+> > > for (int j = 0; j < row; j++) for (int k = 0; k < col; k++) map_data_log[j][k] = map_data[j][k];
+> > > player_pos_log = new int[]{player_pos[0], player_pos[1]};
+> > > map_log.add(map_data_log);
+> > > player_log.add(player_pos_log);
+> > > turn++;
+> > >
+> > > System.out.printf("현재 턴수 : %d%n", turn);
+> > > if(checkClear(map_data, map_data_origin) == true) {
+> > >     System.out.printf("%s 클리어!! 총 %d 턴수가 소요되었습니다!!%n%n", stage_name, turn+1);
+> > >     return false;
+> > > }
+> > > ```
+> > > 
+> > > + 위 코드에서 바뀐점은 우선 명령어(w, a, s, d)에 따라 플레이어의 위치가 변경된 후 바뀐 상태를 로깅만 해주었던 기존 코드와 달리 개선된 코드에서는 바뀐 상태를 로깅하기 전 현재 턴수를 기준으로 로깅 리스트 내 인덱스가 더 많은 요소가 존재한다면 이를 while 반복문으로 제거시켜주는 작업을 해주었습니다. 그리고 나서 로깅 작업을 해주도록 했습니다. 이에 플레이어의 위치가 변경되자마자 턴수(turn)를 증가시켜주는 게 아니라 로깅 작업이 이루어지고나서 턴수를 증가시켜주었습니다.(턴수를 앞에서 증가시켜주면 while 반복문 내에서 인덱스 에러가 나기 때문)
+> > >   + 플레이어가 이동을 한 시점에는(되돌리기 취소를 해서 당초 턴수보다 낮을지라도) 그 시점이 가장 최신의 지도 데이터이기 때문에 그 상태에서는 되돌리기 취소라는 것이 존재할 수 없습니다. 그렇기 때문에 현재 턴수를 초과하는 로깅 자료가 있다면 삭제하는 것이 마땅했습니다. 즉, 위에서 일어났던 버그는 되돌리기 취소라는 것이 되돌리기가 난 후에만 존재해야한다는 것을(어떻게 보면 당연한 것이지만) 인지하지 못했기 때문이었습니다.

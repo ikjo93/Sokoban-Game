@@ -44,7 +44,6 @@ public class GamePlay {
         player_log.add(player_pos_origin);
         int[][] map_data_log;
         int[] player_pos_log;
-        int index = 0;
 
         while(true) {
 
@@ -96,11 +95,6 @@ public class GamePlay {
                     }
                 }
 
-                if(checkClear(map_data, map_data_origin) == true) {
-                    System.out.printf("%s 클리어!! 총 %d 턴수가 소요되었습니다!!%n%n", stage_name, turn+1);
-                    return false;
-                }
-
                 // 변경된 지도 데이터와 플레이어의 위치 로깅 작업
                 row = map_data.length;
                 col = map_data[0].length;
@@ -110,7 +104,11 @@ public class GamePlay {
                 map_log.add(map_data_log);
                 player_log.add(player_pos_log);
                 turn++;
-                System.out.printf("현재 턴수 : %d%n", turn);
+                System.out.printf("현재 턴수 : %d%n%n", turn);
+                if(checkClear(map_data, map_data_origin) == true) {
+                    System.out.printf("%s 클리어!! 총 %d 턴수가 소요되었습니다!!%n%n", stage_name, turn);
+                    return false;
+                }
             }
         }
     }
