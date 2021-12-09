@@ -44,6 +44,7 @@ public class GamePlay {
         player_log.add(player_pos_origin);
         int[][] map_data_log;
         int[] player_pos_log;
+        int index = 0;
 
         while(true) {
 
@@ -84,24 +85,32 @@ public class GamePlay {
                 }
 
                 mapData = checkCommand(command, stage_name, map_data, map_data_origin, player_pos);
-                if(!(mapData == null)) turn++;
-                else continue;
-                System.out.printf("현재 턴수 : %d%n%n", turn);
-                showMap(map_data);
+                if(mapData == null) continue;
+                else {
+                    showMap(map_data);
+                    int loop = map_log.size() - 1;
+                    while (loop > turn) {
+                        map_log.remove(loop);
+                        player_log.remove(loop);
+                        loop--;
+                    }
+                }
 
+                if(checkClear(map_data, map_data_origin) == true) {
+                    System.out.printf("%s 클리어!! 총 %d 턴수가 소요되었습니다!!%n%n", stage_name, turn+1);
+                    return false;
+                }
+
+                // 변경된 지도 데이터와 플레이어의 위치 로깅 작업
                 row = map_data.length;
                 col = map_data[0].length;
-                // 변경된 지도 데이터와 플레이어의 위치 로깅 작업
                 map_data_log = new int[row][col];
                 for (int j = 0; j < row; j++) for (int k = 0; k < col; k++) map_data_log[j][k] = map_data[j][k];
                 player_pos_log = new int[]{player_pos[0], player_pos[1]};
                 map_log.add(map_data_log);
                 player_log.add(player_pos_log);
-
-                if(checkClear(map_data, map_data_origin) == true) {
-                    System.out.printf("%s 클리어!! 총 %d 턴수가 소요되었습니다!!%n%n", stage_name, turn);
-                    return false;
-                }
+                turn++;
+                System.out.printf("현재 턴수 : %d%n", turn);
             }
         }
     }
@@ -210,14 +219,14 @@ public class GamePlay {
 
         if(command == 'u'){
             if(turn < 1) {
-                System.out.println("(경고) 턴을 되돌릴 수 없습니다.");
+                System.out.printf("(경고) 턴을 되돌릴 수 없습니다.%n%n");
                 return turn;
             }
             turn--;
             System.out.printf("한 턴을 되돌립니다. 현재 턴 수 : %d%n", turn);
         } else {
             if(turn > map_log.size() - 2) {
-                System.out.println("(경고) 턴 되돌리기를 취소할 수 없습니다.");
+                System.out.printf("(경고) 턴 되돌리기를 취소할 수 없습니다.%n%n");
                 return turn;
             }
             turn++;
