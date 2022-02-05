@@ -25,7 +25,8 @@
 >	> >  + StageMap 클래스(지도 데이터 읽기, 출력)
 >	> >  + MapData 클래스(스테이지별 지도 데이터 저장 및 전송)
 >	>	>
->	> >  + 클래스 다이어그램
+>	> >  + 이벤트 흐름도
+>	> > 
 >	> > ![캡처](https://user-images.githubusercontent.com/82401504/144848276-0bd13d17-a041-4bba-9fb5-5fda0aa6d1dd.PNG)
 >	>
 >	> + #### 풀이 과정
@@ -230,7 +231,8 @@
 > > >  + MapData 클래스(스테이지별 지도 데이터, 플레이어 위치 정보 저장 및 전송)
 > > >  + GamePlay 클래스(지도 데이터 출력, 플레이어 이동)
 > >	>
-> > >  + 클래스 다이어그램
+> > >  + 이벤트 흐름도
+> > >   
 > > > ![캡처1](https://user-images.githubusercontent.com/82401504/145070804-5b725c06-9f86-439a-8564-e974f29b23d6.PNG)
 > >
 > > + #### 풀이 과정
@@ -373,7 +375,8 @@
 > > >  + MapData 클래스(스테이지별 지도 데이터, 플레이어 위치 정보 저장 및 전송)
 > > >  + GamePlay 클래스(지도 데이터 출력, 플레이어의 이동 및 조건, 초기화 등 부가 기능)
 > >	>
-> > >  + 클래스 다이어그램
+> > >  + 이벤트 흐름도
+> > >
 > > > ![캡처2](https://user-images.githubusercontent.com/82401504/145070691-b19b10fd-880d-48f4-875e-294ba06c8ab5.PNG)
 
 > >
@@ -583,7 +586,8 @@
 > > >  + Converter 클래스(main 클래스, txt 파일 encrypt)
 > > >  + AESCryptoUtil 클래스(txt 파일 encrypt, dedecrypt)
 > >	>
-> > >  + 클래스 다이어그램
+> > >  + 이벤트 흐름도
+> > >
 > > > ![캡처3](https://user-images.githubusercontent.com/82401504/145704133-d4aedc96-7b5d-4382-923b-d8dfba48815d.PNG)
 
 > >
